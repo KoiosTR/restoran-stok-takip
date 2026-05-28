@@ -1,0 +1,64 @@
+name: Build and Deploy to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: restoran-cluster
+  GKE_ZONE: europe-west4
+  DOCKER_IMAGE_API: europe-west4-docker.pkg.dev/${{ secrets.GKE_PROJECT }}/restoran-repo/restoran-api
+  DOCKER_IMAGE_FRONTEND: europe-west4-docker.pkg.dev/${{ secrets.GKE_PROJECT }}/restoran-repo/restoran-frontend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    - name: Configure Docker to use gcloud command-line tool as a credential helper
+      run: |-
+        gcloud --quiet auth configure-docker
+
+    - name: Get GKE credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
+
+    - name: Build and Push API Image
+      run: |-
+        docker build -t $DOCKER_IMAGE_API:${{ github.sha }} ./backend
+        docker push $DOCKER_IMAGE_API:${{ github.sha }}
+        
+    - name: Build and Push Frontend Image
+      run: |-
+        docker build -t $DOCKER_IMAGE_FRONTEND:${{ github.sha }} ./frontend
+        docker push $DOCKER_IMAGE_FRONTEND:${{ github.sha }}
+
+    - name: Deploy to GKE
+      run: |-
+        # İmaj etiketlerini K8s manifestolarına inject ediyoruz
+        sed -i "s|europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-api:v1|$DOCKER_IMAGE_API:${{ github.sha }}|g" k8s/api-deployment.yaml
+        sed -i "s|europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-frontend:v1|$DOCKER_IMAGE_FRONTEND:${{ github.sha }}|g" k8s/frontend-deployment.yaml
+        
+        kubectl apply -f k8s/db-pvc.yaml
+        kubectl apply -f k8s/db-deployment.yaml
+        kubectl apply -f k8s/api-deployment.yaml
+        kubectl apply -f k8s/frontend-deployment.yaml
+        kubectl apply -f k8s/network-policy.yaml
+        kubectl apply -f k8s/api-hpa.yaml
+        
+        kubectl rollout status deployment/api
+        kubectl rollout status deployment/frontend

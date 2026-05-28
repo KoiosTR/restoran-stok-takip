@@ -1,0 +1,547 @@
+:root {
+  --primary: #84cc16; /* Lime Green */
+  --primary-hover: #65a30d;
+  --secondary: #a855f7; /* Purple */
+  --secondary-hover: #9333ea;
+  --dark: #111827; /* Pitch black */
+  --bg-main: #ffffff;
+  --surface: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --danger-text: #b91c1c;
+  --success: #22c55e;
+  --border: #111827;
+  --card-shadow: 4px 4px 0px #111827;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+  color: var(--text-main);
+  height: 100vh;
+  overflow: hidden;
+}
+
+button, a, input[type="submit"], select, .tab-btn, .btn-icon, .btn {
+  cursor: pointer;
+}
+
+.product-item { cursor: grab; }
+.product-item.is-dragging, .product-item.is-dragging * { cursor: grabbing !important; }
+
+/* Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+  padding: 0; /* Tam ekran olması için boşlukları sıfırladık */
+  justify-content: center;
+}
+
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 100%; /* Sınırı tamamen kaldırdık */
+  height: 100%;
+  background: var(--bg-main);
+  border-radius: 0; /* Tam ekrana oturduğu için köşeleri düzleştirdik */
+  overflow: hidden;
+  box-shadow: none;
+  position: relative;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 90px;
+  background-color: var(--dark); /* Pitch black */
+  display: flex;
+  flex-direction: column;
+  padding: 3rem 0;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.sidebar .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 3rem;
+}
+
+.sidebar .logo span {
+  display: none;
+}
+
+.sidebar .nav-item {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  padding: 1rem 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.sidebar .nav-item:hover:not(.active) {
+  color: white;
+  background: rgba(255,255,255,0.05);
+}
+
+.sidebar .nav-item span {
+  display: none;
+}
+
+.sidebar .nav-item.active {
+  background: var(--bg-main);
+  color: var(--dark);
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  margin-left: 1rem;
+  width: calc(100% - 1rem);
+  padding: 1rem 0;
+  justify-content: center;
+}
+
+.sidebar .nav-item.active::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -30px;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  background-image: radial-gradient(circle at top left, transparent 30px, var(--bg-main) 31px);
+  pointer-events: none;
+}
+
+.sidebar .nav-item.active::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -30px;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  background-image: radial-gradient(circle at bottom left, transparent 30px, var(--bg-main) 31px);
+  pointer-events: none;
+}
+
+/* Active User Profile */
+.active-user-info {
+  margin: auto 0 1.5rem 1rem;
+  background: var(--dark);
+  border-radius: 20px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+  width: 240px; /* Match active tab exactly */
+  position: relative;
+  z-index: 10;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  background: var(--primary);
+  color: var(--dark);
+  font-weight: 900;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border: 2px solid var(--dark);
+  border-radius: 50%;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1; /* Take up remaining space */
+}
+
+.user-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.1rem;
+}
+
+.user-time {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Header */
+.top-header {
+  padding: 1.2rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--border);
+}
+
+.top-header h1 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.main-panel {
+  flex: 1;
+  padding: 2rem 4rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* Hide scrollbar visually while keeping scrollable */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.main-panel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Constrain width of all tab views to create empty space on sides */
+.main-panel > div {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+/* Promo Banners */
+.promo-banner {
+  display: flex;
+  background: var(--surface);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 6px 6px 0px var(--border);
+  border: 3px solid var(--border);
+  margin-bottom: 2rem;
+  align-items: stretch;
+}
+.promo-banner-content {
+  flex: 1;
+  padding: 3rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.promo-banner-content h2 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+.promo-banner-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+.promo-banner-image {
+  width: 40%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promo-banner-image.bottom-aligned {
+  align-items: flex-end;
+}
+.promo-banner-image.bottom-aligned img {
+  object-position: bottom;
+  padding-bottom: 0 !important;
+}
+
+/* Grid Layout for Side-by-Side Containers */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1200px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-illustration {
+  width: 100%;
+  border-radius: 20px;
+  border: 3px solid var(--border);
+  box-shadow: 6px 6px 0px var(--border);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  background: #fdf2f8; /* Soft pink background for contrast */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2.5rem 3rem;
+  min-height: 200px;
+}
+
+.hero-illustration img {
+  height: 160px;
+  object-fit: contain;
+}
+
+.hero-text h2 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-text p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Cards (Neo-brutalism) */
+.card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 2px solid var(--border);
+  box-shadow: var(--card-shadow);
+}
+
+/* Special solid color cards if needed */
+.card-green { background: #bef264; }
+.card-purple { background: #c084fc; color: white; }
+.card-black { background: var(--dark); color: white; }
+
+h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Form Styles */
+.form-group { margin-bottom: 1.2rem; flex: 1; }
+.form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+label { display: block; margin-bottom: 0.5rem; color: var(--text-main); font-weight: 800; }
+
+input, select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 2px 2px 0px var(--border);
+}
+
+input:focus, select:focus {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px var(--border);
+}
+
+/* Buttons */
+.btn {
+  padding: 0.8rem 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 3px 3px 0px var(--border);
+}
+
+.btn-primary { background: var(--primary); color: var(--text-main); }
+.btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--border);
+}
+.btn-primary:active {
+  transform: translate(0, 0);
+  box-shadow: 0 0 0 var(--border);
+}
+
+.btn-secondary { background: #f3f4f6; color: var(--text-main); }
+.btn-secondary:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+.btn-secondary:active { transform: translate(0, 0); box-shadow: 0 0 0 var(--border); }
+
+.btn-icon {
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--text-muted);
+  padding: 0.6rem;
+  border-radius: 10px;
+  transition: all 0.2s;
+  display: inline-flex;
+}
+
+.btn-icon:hover {
+  color: var(--text-main);
+  border: 2px solid var(--border);
+  box-shadow: 2px 2px 0px var(--border);
+}
+.btn-icon.danger:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* Product List */
+.product-list { display: flex; flex-direction: column; gap: 1rem; min-height: 200px; }
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 3px 3px 0px var(--border);
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.product-item:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--border);
+}
+
+.product-info { display: flex; flex-direction: column; }
+.product-name { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
+.product-stock { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 0.25rem; margin-top: 0.3rem; font-weight: 600;}
+.low-stock { color: var(--danger); font-weight: 800; }
+.product-actions { display: flex; gap: 0.5rem; align-items: center; }
+
+.category-badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 900;
+  background: var(--primary);
+  border: 2px solid var(--dark);
+  color: var(--dark);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px var(--border);
+}
+
+/* Kitchen Zone */
+.kitchen-zone {
+  background: #f8fafc;
+  border: 3px dashed var(--border);
+  border-radius: 20px;
+  padding: 3rem 1.5rem;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-main);
+  font-weight: 800;
+  transition: all 0.3s;
+}
+.kitchen-zone.is-dragging-over {
+  background: #dcfce7;
+  border-style: solid;
+  transform: scale(1.02);
+  box-shadow: 4px 4px 0px var(--border);
+}
+.kitchen-zone .icon { font-size: 4rem; margin-bottom: 1.5rem; }
+.empty-state { text-align: center; color: var(--text-muted); padding: 3rem 2rem; font-weight: 700; }
+
+/* Modals */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: white;
+  padding: 3rem;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 500px;
+  border: 3px solid var(--border);
+  box-shadow: 8px 8px 0px var(--border);
+}
+.modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; }
+
+/* Recipe & PO Details */
+.list-group {
+  margin: 1rem 0;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 3px 3px 0px var(--border);
+}
+
+/* Alert Notification */
+.alert-notification {
+  position: fixed;
+  bottom: 6rem;
+  right: 2rem;
+  background: var(--danger);
+  border: 2px solid var(--border);
+  color: white;
+  padding: 1.2rem 2rem;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px var(--border);
+  z-index: 10000;
+  font-weight: 800;
+}
+
+/* Hide all scrollbars globally but keep elements scrollable */
+html, body, .sidebar-scrollable {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar, .sidebar-scrollable::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
