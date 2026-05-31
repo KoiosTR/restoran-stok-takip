@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-frontend:v1
+          image: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-frontend:v3
           imagePullPolicy: Always
           ports:
             - containerPort: 80

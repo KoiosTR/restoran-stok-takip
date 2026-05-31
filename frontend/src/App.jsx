@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { DragDropContext } from '@hello-pangea/dnd'
 import { motion, AnimatePresence } from 'framer-motion'
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, Users, Plus, Trash2, ChefHat } from 'lucide-react'
 import './index.css'
 
 import Sidebar from './components/shared/Sidebar'

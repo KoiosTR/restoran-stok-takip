@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-api:v1
+          image: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-api:v2
           imagePullPolicy: Always
           env:
             - name: APP_VERSION
