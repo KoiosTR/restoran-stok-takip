@@ -33,7 +33,7 @@ jobs:
 
     - name: Configure Docker to use gcloud command-line tool as a credential helper
       run: |-
-        gcloud --quiet auth configure-docker
+        gcloud --quiet auth configure-docker europe-west4-docker.pkg.dev
 
     - name: Get GKE credentials
       uses: google-github-actions/get-gke-credentials@v2
