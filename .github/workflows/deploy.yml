@@ -6,23 +6,27 @@ on:
       - main
 
 env:
-  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  PROJECT_ID: project-f75dc94f-2ec6-4f08-bcb
   GKE_CLUSTER: restoran-cluster
   GKE_ZONE: europe-west4
-  DOCKER_IMAGE_API: europe-west4-docker.pkg.dev/${{ secrets.GKE_PROJECT }}/restoran-repo/restoran-api
-  DOCKER_IMAGE_FRONTEND: europe-west4-docker.pkg.dev/${{ secrets.GKE_PROJECT }}/restoran-repo/restoran-frontend
+  DOCKER_IMAGE_API: europe-west4-docker.pkg.dev/project-f75dc94f-2ec6-4f08-bcb/restoran-repo/restoran-api
+  DOCKER_IMAGE_FRONTEND: europe-west4-docker.pkg.dev/project-f75dc94f-2ec6-4f08-bcb/restoran-repo/restoran-frontend
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
+      uses: google-github-actions/auth@v2
       with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+        workload_identity_provider: 'projects/PROJE_NUMARAN/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+        service_account: 'kuru-temizleme-sa@project-f75dc94f-2ec6-4f08-bcb.iam.gserviceaccount.com'
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
