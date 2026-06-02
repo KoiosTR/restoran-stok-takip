@@ -6,11 +6,11 @@ on:
       - main
 
 env:
-  PROJECT_ID: project-f75dc94f-2ec6-4f08-bcb
+  PROJECT_ID: restoran-stok-projesi
   GKE_CLUSTER: restoran-cluster
   GKE_ZONE: europe-west4
-  DOCKER_IMAGE_API: europe-west4-docker.pkg.dev/project-f75dc94f-2ec6-4f08-bcb/restoran-repo/restoran-api
-  DOCKER_IMAGE_FRONTEND: europe-west4-docker.pkg.dev/project-f75dc94f-2ec6-4f08-bcb/restoran-repo/restoran-frontend
+  DOCKER_IMAGE_API: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-api
+  DOCKER_IMAGE_FRONTEND: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-frontend
 
 jobs:
   build-and-deploy:
