@@ -54,8 +54,8 @@ jobs:
     - name: Deploy to GKE
       run: |-
         # İmaj etiketlerini K8s manifestolarına inject ediyoruz
-        sed -i "s|europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-api:v1|$DOCKER_IMAGE_API:${{ github.sha }}|g" k8s/api-deployment.yaml
-        sed -i "s|europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-frontend:v1|$DOCKER_IMAGE_FRONTEND:${{ github.sha }}|g" k8s/frontend-deployment.yaml
+        sed -i "s|image: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-api.*|image: $DOCKER_IMAGE_API:${{ github.sha }}|g" k8s/api-deployment.yaml
+        sed -i "s|image: europe-west4-docker.pkg.dev/restoran-stok-projesi/restoran-repo/restoran-frontend.*|image: $DOCKER_IMAGE_FRONTEND:${{ github.sha }}|g" k8s/frontend-deployment.yaml
         
         kubectl apply -f k8s/db-pvc.yaml
         kubectl apply -f k8s/db-deployment.yaml
