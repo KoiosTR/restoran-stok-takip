@@ -18,7 +18,7 @@ const ProcurementView = ({
     <motion.div key="procurement-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="grid">
       <div className="left-panel" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         <div className="card">
-          <h2><Plus size={24} color="var(--primary)" /> Yeni Tedarikçi Ekle</h2>
+          <h2><Plus size={24} color="var(--primary)" /> Tedarikçi Ekle</h2>
           <form onSubmit={handleAddSupplier}>
             <div className="form-group">
               <label>Firma Adı</label>
