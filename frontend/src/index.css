@@ -71,11 +71,7 @@ button, a, input[type="submit"], select, .tab-btn, .btn-icon, .btn {
 }
 
 .sidebar .logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin-bottom: 3rem;
+  
 }
 
 .sidebar .logo span {

@@ -1,0 +1,2 @@
+Web Sitesinin Linki = http://34.178.101.15/
+Github Linki = https://github.com/KoiosTR/restoran-stok-takip
