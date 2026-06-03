@@ -20,7 +20,7 @@ const RecipeView = ({
         <div className="promo-banner-content">
           <h2 style={{ color: '#111827', fontWeight: '900' }}>Mükemmel Lezzetlerin Reçeteleri</h2>
           <p style={{ color: '#111827', fontWeight: '600', opacity: 0.85 }}>
-            Usta şeflerin gizli formüllerini burada saklayın. Her bir porsiyonun tam içeriğini belirleyerek maliyetleri gramı gramına eksiksiz hesaplayın.
+            UARDAn. Her bir porsiyonun tam içeriğini belirleyerek maliyetleri gramı gramına eksiksiz hesaplayın.
           </p>
         </div>
         <div className="promo-banner-image bottom-aligned" style={{ borderLeft: 'none' }}>
